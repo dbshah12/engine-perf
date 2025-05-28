@@ -1,4 +1,4 @@
-# Introduction
+# 🚀 Introduction
 Engine Performance Analytics Tool is multi-threaded Python-based project that:​
 - Fetches performance metrics from Delphix Engines every 1 minute.​
 - Stores the data in InfluxDB, a high-performance time-series database.​
@@ -8,17 +8,24 @@ Engine Performance Analytics Tool is multi-threaded Python-based project that:�
   - Allows users to add custom queries for specific metrics.​
 - This approach decouples time-series data from other databases, reducing system load and improving performance visualization.
 
-# Technology
-- Telegraf – Data collection agent​
-- InfluxDB – Time-series database​
-- Grafana – Visualization and alerting
-- python - For scripting to fetch data from Delphix engine
+# 🛠️ Technology Stack
+- Telegraf – Data collection agent
+- InfluxDB – Time-series database
+- Grafana – Visualization and alerting platform
+- Python – Scripting to fetch data from Delphix Engines
+- Docker – Build and deploy the entire stack as containers
 
-# How to run
-- Clone the repo
-- Install docker-compose in your system
-- `docker compose build`
-- `docker compose up -d`
+# ▶️ How to Run
+- Clone the repository
+- Ensure docker-compose is installed on your system
+- Run the following commands:
+```
+docker compose build  
+docker compose up -d
+```
+This will spin up all required containers (InfluxDB, Telegraf, Grafana) on a shared Docker network.
+
+
 
 # 🔐 Default Credentials
 - The default `username/password` for InfluxDB and Grafana is `admin/Delphix@123`.
