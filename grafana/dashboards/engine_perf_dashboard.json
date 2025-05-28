@@ -1,0 +1,219 @@
+{
+  "id": null,
+  "uid": "pit-dashboard",
+  "title": "Engine Performance Dashboard",
+  "schemaVersion": 37,
+  "version": 1,
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "engine",
+        "label": "Engine",
+        "type": "query",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "engine_perf_influxdb_v2"
+        },
+        "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(\n  bucket: \"engine_perf\",\n  tag: \"engine\"\n)",
+        "refresh": 1,
+        "multi": false,
+        "includeAll": false,
+        "allValue": "",
+        "sort": 1,
+        "current": {
+          "text": "None",
+          "value": ""
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "CPU Utilization",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 9
+      },
+      "id": 1,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"CpuUtilDatapointStream\") |> filter(fn: (r) => r.engine == \"${engine}\") |> filter(fn: (r) => r._field == \"idle\" or r._field == \"kernel\" or r._field == \"user\")",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"CpuUtilDatapointStream\") |> filter(fn: (r) => r.engine == \"${engine}\") |> filter(fn: (r) => r._field == \"idle\" or r._field == \"kernel\" or r._field == \"user\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> map(fn: (r) => ({ r with cpuUtil: ((float(v: r.kernel) + float(v: r.user)) * 100.0) / (float(v: r.idle) + float(v: r.kernel) + float(v: r.user)) })) |> keep(columns: [\"_time\", \"cpuUtil\"])",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Network Interface Utilization",
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 24,
+        "h": 9
+      },
+      "id": 2,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"NetworkInterfaceUtilDatapointStream\") |> filter(fn: (r) => r.engine == \"fluentd\") |> filter(fn: (r) => r._field == \"inBytes\" or r._field == \"inPackets\" or r._field == \"outBytes\" or r._field == \"outPackets\")",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"NetworkInterfaceUtilDatapointStream\") |> filter(fn: (r) => r.engine == \"fluentd\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> map(fn: (r) => ({ r with TrafficRatio: float(v: r.outBytes) / float(v: r.inBytes), PacketRatio: if exists r.outPackets and exists r.inPackets and r.inPackets != 0 then float(v: r.outPackets) / float(v: r.inPackets) else 0.0 })) |> keep(columns: [\"_time\", \"TrafficRatio\", \"PacketRatio\"])",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 2
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "TCP Stats",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 24,
+        "h": 9
+      },
+      "id": 3,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"TCPStatsDatapointStream\") |> filter(fn: (r) => r.engine == \"${engine}\") |> filter(fn: (r) => r._field == \"congestionWindowSize\" or r._field == \"inBytes\" or r._field == \"outBytes\" or r._field == \"receiveWindowSize\" or r._field == \"retransmittedSegs\" or r._field == \"roundTripTime\" or r._field == \"sendWindowSize\" or r._field == \"unacknowledgedBytes\" or r._field == \"unsentBytes\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 2
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Disk Ops",
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 24,
+        "h": 9
+      },
+      "id": 4,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"DiskOpsDatapointStream\") |> filter(fn: (r) => r.engine == \"fluentd\") |> filter(fn: (r) => r._field == \"avgLatency\" or r._field == \"throughput\" or r._field == \"count\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 2
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "iSCSI Ops",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 12,
+        "h": 9
+      },
+      "id": 5,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"IScsiOpsDatapointStream\") |> filter(fn: (r) => r.engine == \"${engine}\") |> filter(fn: (r) => r._field == \"op\" or r._field == \"avgLatency\" or r._field == \"latency\" or r._field == \"count\" or r._field == \"throughput\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 2
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "NFS Ops",
+      "gridPos": {
+        "x": 12,
+        "y": 36,
+        "w": 12,
+        "h": 9
+      },
+      "id": 6,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "engine_perf_influxdb_v2"
+          },
+          "queryType": "flux",
+          "query": "from(bucket: \"engine_perf\") |> range(start: v.timeRangeStart, stop: v.timeRangeStop) |> filter(fn: (r) => r._measurement == \"NfsOpsDatapointStream\") |> filter(fn: (r) => r.engine == \"${engine}\") |> filter(fn: (r) => r._field == \"op\" or r._field == \"avgLatency\" or r._field == \"latency\" or r._field == \"count\" or r._field == \"throughput\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 2
+        }
+      }
+    }
+  ]
+}

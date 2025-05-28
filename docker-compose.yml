@@ -1,0 +1,51 @@
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb2_data:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=Delphix@123
+      - DOCKER_INFLUXDB_INIT_ORG=delphix
+      - DOCKER_INFLUXDB_INIT_BUCKET=engine_perf
+      - DOCKER_INFLUXDB_INIT_RETENTION=7d
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=super-secret-token
+
+  telegraf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telegraf
+    depends_on:
+      - influxdb
+    restart: on-failure
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./scripts:/app/scripts
+    environment:
+      - PYTHONUNBUFFERED=1
+    entrypoint: [ "telegraf", "--config", "/etc/telegraf/telegraf.conf" ]
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - influxdb
+    volumes:
+      - ./grafana/provisioning/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - ./grafana/provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - ./grafana/dashboards:/etc/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=Delphix@123
+      - GF_USERS_ALLOW_SIGN_UP=false
+
+volumes:
+  influxdb2_data:
+  grafana_data:

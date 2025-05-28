@@ -1,0 +1,16 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    uid: engine_perf_influxdb_v2
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: delphix
+      defaultBucket: engine_perf
+      timeInterval: "60s"
+    secureJsonData:
+      token: super-secret-token
