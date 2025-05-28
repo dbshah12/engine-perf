@@ -16,5 +16,5 @@ Engine Performance of Delphix Engine with Telegraph, InfluxDb v2 &amp; Grafana
   - These files reference the credentials inside the Docker containers.
 
 # 🌐 Default Access URLs
-- InfluxDB: http://<host-ip>:8086
-- Grafana: http://<host-ip>:3000
+- InfluxDB: `http://<host-ip>:8086`
+- Grafana: `http://<host-ip>:3000`
