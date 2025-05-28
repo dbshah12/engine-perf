@@ -1,5 +1,18 @@
-# engine-perf
-Engine Performance of Delphix Engine with Telegraph, InfluxDb v2 &amp; Grafana
+# Introduction
+Engine Performance Analytics Tool is multi-threaded Python-based project that:​
+- Fetches performance metrics from Delphix Engines every 1 minute.​
+- Stores the data in InfluxDB, a high-performance time-series database.​
+- Integrated this script with Telegraf, allowing it to run automatically at 1-minute intervals.​
+- Using Grafana, which integrates seamlessly with InfluxDB, we built a configurable dashboard:​
+  - Includes default graphs.​
+  - Allows users to add custom queries for specific metrics.​
+- This approach decouples time-series data from other databases, reducing system load and improving performance visualization.
+
+# Technology
+- Telegraf – Data collection agent​
+- InfluxDB – Time-series database​
+- Grafana – Visualization and alerting
+- python - For scripting to fetch data from Delphix engine
 
 # How to run
 - Clone the repo
