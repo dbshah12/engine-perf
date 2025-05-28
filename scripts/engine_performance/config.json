@@ -13,18 +13,6 @@
       "PASSWORD": "delphix"
     }
   ],
-  "INFLUXDB_V2_": {
-    "URL": "http://localhost:8086",
-    "BUCKET": "engine_pref_metrics",
-    "ORG": "96ffe75236ee5aa8",
-    "TOKEN": "V7TbuhVYst-gUXskdhoS_qZXu6I7LAGcR5TcswIIS5Jkj1AkcMUdWKQNQBZbaLbG8jdzze7P_5_Hf09H5GBWMQ=="
-  },
-  "INFLUXDB_V1_": {
-    "URL": "http://localhost:8086",
-    "DB": "engine_perf",
-    "USER": "admin",
-    "PASSWORD": "Delphix@123"
-  },
   "INFLUXDB_V2": {
     "URL": "http://influxdb:8086",
     "BUCKET": "engine_perf",
