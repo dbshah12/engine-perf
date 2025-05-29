@@ -1,16 +1,16 @@
 {
   "ENGINES": [
     {
-      "NAME": "de-dev",
-      "BASE_URL": "https://de-dev.dcol2.delphix.com",
-      "USERNAME": "admin",
-      "PASSWORD": "delphix"
+      "NAME": "engin1",
+      "BASE_URL": "https://<engin1_hostname_or_ip>",
+      "USERNAME": "user",
+      "PASSWORD": "password"
     },
     {
-      "NAME": "fluentd",
-      "BASE_URL": "https://fluentd.dcol2.delphix.com",
-      "USERNAME": "admin",
-      "PASSWORD": "delphix"
+      "NAME": "engine2",
+      "BASE_URL": "https://<engin2_hostname_or_ip>",
+      "USERNAME": "user",
+      "PASSWORD": "password"
     }
   ],
   "INFLUXDB_V2": {
