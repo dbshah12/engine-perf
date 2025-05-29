@@ -17,7 +17,8 @@ Engine Performance Analytics Tool is multi-threaded Python-based project that:�
 
 # ▶️ How to Run
 - Clone the repository
-- Ensure docker-compose is installed on your system
+- Ensure `docker-compose` is installed on your system
+- Update the `scripts/engine_performance/config.json` file to include the Delphix engines and their credentials for which you want to fetch data.
 - Run the following commands:
 ```
 docker compose build  
